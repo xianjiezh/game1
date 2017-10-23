@@ -1,0 +1,43 @@
+<head>
+    <meta charset="UTF-8">
+    <title>game 1</title>
+    <style>
+    canvas{
+        border:1px solid black;
+    }
+    </style>
+    
+</head>
+<body>
+    <canvas id="id-canvas" width="400" height="300"></canvas>
+<script>
+var log = console.log.bind(console)
+var canvas = document.querySelector('#id-canvas')
+var context = canvas.getContext('2d')
+var img = new Image()
+img.src = 'paddle.png'
+img.onload = function(){
+    context.drawImage(img, 150, 200)
+    }
+    
+window.addEventListener('keydown',function(event){
+    var k = event.key
+    if (k == 'a'){
+        x-=10
+        context.clearRect(0, 0, canvas.width, canvas.height)
+        context.drawImage(img, x, y)
+    } else if (k == 'd'){
+        x+=10
+        context.clearRect(0, 0, canvas.width, canvas.height)
+        context.drawImage(img, x, y) 
+    }
+
+})
+setInterval(function(){
+
+})
+
+
+</script>
+</body>
+</html>
