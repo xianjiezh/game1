@@ -12,31 +12,54 @@
     <canvas id="id-canvas" width="400" height="300"></canvas>
 <script>
 var log = console.log.bind(console)
+
+
 var canvas = document.querySelector('#id-canvas')
 var context = canvas.getContext('2d')
+
+var x = 100
+var y = 200
+var speed = 5
 var img = new Image()
 img.src = 'paddle.png'
 img.onload = function(){
-    context.drawImage(img, 150, 200)
+    context.drawImage(img, x, y)
     }
-    
+
+var leftDown = false
+var rightDown = false
+
 window.addEventListener('keydown',function(event){
+    //log('keydown')
     var k = event.key
     if (k == 'a'){
-        x-=10
-        context.clearRect(0, 0, canvas.width, canvas.height)
-        context.drawImage(img, x, y)
+        leftDown = true
     } else if (k == 'd'){
-        x+=10
-        context.clearRect(0, 0, canvas.width, canvas.height)
-        context.drawImage(img, x, y) 
+        rightDown = true
+    }
+})
+window.addEventListener('keyup',function(event){
+    //log('keyup')
+    var k = event.key
+    if (k == 'a'){
+        leftDown = false
+    } else if (k == 'd'){
+        rightDown = false
     }
 
 })
+
 setInterval(function(){
+    if (leftDown){
+        x -=speed
+    } else if(rightDown){
+        x+=speed
+    }
+    //clamp x
 
-})
-
+    context.clearRect(0, 0, canvas.width, canvas.height)
+    context.drawImage(img, x, y)
+} ,1000/30)
 
 </script>
 </body>
