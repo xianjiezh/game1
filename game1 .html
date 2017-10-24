@@ -13,18 +13,71 @@
 <script>
 var log = console.log.bind(console)
 
+var imageFromPath = function(path) {
+    var img = new Image()
+    img.src = path
+    return img
+}
 
-var canvas = document.querySelector('#id-canvas')
-var context = canvas.getContext('2d')
 
-var x = 100
-var y = 200
-var speed = 5
-var img = new Image()
-img.src = 'paddle.png'
-img.onload = function(){
-    context.drawImage(img, x, y)
+var Paddle = function() {
+    var image = imageFromPath('paddle.png')
+    var o = {
+        image:image,
+        x: 100,
+        y: 200,
+        speed: 5,
     }
+    var paddle = o
+    o.moveLeft = function(){
+        paddle.x-= paddle.speed
+    }
+    o.moveRight = function(){
+        paddle.x+= paddle.speed
+    }
+    return o
+}
+var PaGame = function() {
+    var g = {
+        actions:{},
+        keydowns:{},
+    }
+    var canvas = document.querySelector('#id-canvas')
+    var context = canvas.getContext('2d')
+    g.canvas = canvas
+    g.context = context
+    //events
+    window.addEventListener('keydown', function(event){
+        g.keydowns[event.key] = true
+        })
+    window.addEventListener('keyup', function(event){
+        g.keydowns[event.key] = true
+        })
+    //
+    g.registerAction = function(key,callback) {
+        g.actions[key] = callback
+    }
+    //update 
+    setInterval(function(){
+        var actions = Object.key(g.actions)
+        for (var i = 0; i < actions.length; i++){
+            var key = actions[i]
+            if (g.keydowns[key]){
+                //如果按键被按下，调用注册的 action
+                g.actions[key]()
+              }
+
+        }
+        g.update()
+        context.clearRect(0, 0, canvas.width, canvas.height)
+        g.draw()
+    },1000/30)
+    return g
+    
+}
+var _main = function() {
+    var game = PaGame()
+    var paddle = Paddle()
 
 var leftDown = false
 var rightDown = false
@@ -48,19 +101,20 @@ window.addEventListener('keyup',function(event){
     }
 
 })
-
-setInterval(function(){
+game.update = function() {
     if (leftDown){
-        x -=speed
+        paddle.moveLeft()
     } else if(rightDown){
-        x+=speed
+        paddle.moveRight()
     }
-    //clamp x
+}
+game.draw = function() {
+    // draw
+    game.context.drawImage(paddle.image, paddle.x, paddle.y)
+}
 
-    context.clearRect(0, 0, canvas.width, canvas.height)
-    context.drawImage(img, x, y)
-} ,1000/30)
-
+}
+_main()
 </script>
 </body>
 </html>
